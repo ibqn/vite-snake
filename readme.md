@@ -1,1 +1,3 @@
-## Vite based template for react and tailwind
+## Snake based on xstate machine
+
+![Screenshot](./screenshot.png)
