@@ -165,7 +165,7 @@ type Events = NewGameEvent | PauseEvent | TickEvent | ArrowKeyEvent
 
 export const snakeMachine = setup({
   types: {
-    context: makeInitialContext(),
+    context: {} as Context,
     events: {} as Events,
   },
   guards: {
@@ -213,7 +213,7 @@ export const snakeMachine = setup({
 }).createMachine({
   id: 'snake',
   initial: 'new game',
-  context: {} as Context,
+  context: makeInitialContext(),
   states: {
     'new game': {
       on: {
