@@ -26,7 +26,7 @@ export type Context = {
 }
 
 type GameObject = {
-  type?: 'head' | 'body' | 'tail' | 'apple'
+  type?: 'head' | 'body' | 'body-turn' | 'tail' | 'apple'
   dir?: Dir
   fromDir?: Dir
 }
@@ -48,7 +48,11 @@ export const getGameObjectAtPoint = (
     }
 
     const fromDir = snake[snakeIndex - 1].dir
-    return { type: 'body', dir: bodyPart.dir, fromDir }
+    return {
+      type: bodyPart.dir === fromDir ? 'body' : 'body-turn',
+      dir: bodyPart.dir,
+      fromDir,
+    }
   }
 
   if (isSamePoint(point, apple)) {
