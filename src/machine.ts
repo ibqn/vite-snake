@@ -25,28 +25,17 @@ export type Context = {
   highScore: number
 }
 
-type GameObject =
-  | {
-      type: 'head'
-      dir: Dir
-    }
-  | {
-      type: 'body'
-      dir: Dir
-      fromDir: Dir
-    }
-  | {
-      type: 'tail'
-      dir: Dir
-    }
-  | { type: 'apple' }
+type GameObject = {
+  type?: 'head' | 'body' | 'tail' | 'apple'
+  dir?: Dir
+  fromDir?: Dir
+}
 
 export const getGameObjectAtPoint = (
   point: Point,
-  context: Context
-): GameObject | null => {
-  const { snake, apple } = context
-
+  snake: Snake,
+  apple: Point
+): GameObject => {
   const snakeIndex = findIndex(snake, point)
   if (snakeIndex !== -1) {
     const bodyPart = snake[snakeIndex]
@@ -65,8 +54,7 @@ export const getGameObjectAtPoint = (
   if (isSamePoint(point, apple)) {
     return { type: 'apple' }
   }
-
-  return null
+  return {}
 }
 
 const isSamePoint = (a: Point, b: Point) => a.x === b.x && a.y === b.y
