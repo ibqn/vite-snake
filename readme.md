@@ -1,3 +1,3 @@
 ## Snake based on xstate machine
 
-![Screenshot](./screenshot.png)
+![Screenshot](./screenshot-init.png)
