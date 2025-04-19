@@ -9,7 +9,6 @@ export const SnakeGame = () => {
   useEffect(() => {
     function keyListener(event: KeyboardEvent) {
       const [maybeKey, maybeDir] = event.key.split('Arrow')
-      console.log('maybeKey', maybeKey, 'maybeDir', maybeDir)
       if (maybeDir) {
         send({ type: 'ARROW_KEY', dir: maybeDir.toLowerCase() as Dir })
       } else if (maybeKey === 'r') {
