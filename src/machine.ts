@@ -66,7 +66,7 @@ const isOutOfBounds = (point: Point, gridSize: Point) =>
   point.x < 0 || point.y < 0 || point.x >= gridSize.x || point.y >= gridSize.y
 
 const findIndex = <T extends Point>(points: T[], point: Point) =>
-  points.findIndex((p) => isSamePoint(p, point))
+  points.findLastIndex((p) => isSamePoint(p, point))
 
 const head = (snake: Snake) => snake.slice(0, 1)[0]
 const tail = (snake: Snake) => snake.slice(-1)[0]
