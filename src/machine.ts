@@ -27,8 +27,7 @@ export type Context = {
 
 type GameObject = {
   type?: 'head' | 'body' | 'body-turn' | 'tail' | 'apple'
-  dir?: Dir
-  fromDir?: Dir
+  dir?: TurnDir
 }
 
 export const getGameObjectAtPoint = (
@@ -38,20 +37,21 @@ export const getGameObjectAtPoint = (
 ): GameObject => {
   const snakeIndex = findIndex(snake, point)
   if (snakeIndex !== -1) {
-    const bodyPart = snake[snakeIndex]
+    const body = snake[snakeIndex]
     if (snakeIndex === 0) {
-      return { type: 'head', dir: bodyPart.dir }
+      return { type: 'head', dir: body.dir }
     }
 
     if (snakeIndex === snake.length - 1) {
-      return { type: 'tail', dir: bodyPart.dir }
+      return { type: 'tail', dir: snake[snakeIndex - 1].dir }
     }
 
-    const fromDir = snake[snakeIndex - 1].dir
+    const from = snake[snakeIndex + 1]
+    const to = snake[snakeIndex - 1]
+
     return {
-      type: bodyPart.dir === fromDir ? 'body' : 'body-turn',
-      dir: bodyPart.dir,
-      fromDir,
+      type: to.x !== from.x && to.y !== from.y ? 'body-turn' : 'body',
+      dir: getTurnDir(from, body, to),
     }
   }
 
@@ -68,8 +68,8 @@ const isOutOfBounds = (point: Point, gridSize: Point) =>
 const findIndex = <T extends Point>(points: T[], point: Point) =>
   points.findIndex((p) => isSamePoint(p, point))
 
-const head = (snake: Snake) => snake[0]
-const tail = (snake: Snake) => snake[snake.length - 1]
+const head = (snake: Snake) => snake.slice(0, 1)[0]
+const tail = (snake: Snake) => snake.slice(-1)[0]
 const body = (snake: Snake) => snake.slice(1)
 
 const oppositeDir = (dir: Dir): Dir => {
@@ -83,6 +83,49 @@ const oppositeDir = (dir: Dir): Dir => {
     case Dir.right:
       return Dir.left
   }
+}
+
+type TurnDir =
+  | Dir
+  | 'bottom-left'
+  | 'bottom-right'
+  | 'top-left'
+  | 'top-right'
+  | 'right-bottom'
+  | 'left-bottom'
+  | 'right-top'
+  | 'left-top'
+
+const getTurnDir = (from: Point, current: Point, to: Point): TurnDir => {
+  // Calculate vectors
+  const vector1 = { x: current.x - from.x, y: current.y - from.y }
+  const vector2 = { x: to.x - current.x, y: to.y - current.y }
+
+  // Cross product to determine the turn direction
+  const crossProduct = vector1.x * vector2.y - vector1.y * vector2.x
+
+  // Determine the turn direction based on the cross product
+  if (crossProduct > 0) {
+    // clockwise turn (right turn)
+    if (vector1.x > 0 && vector2.y > 0) return 'right-bottom'
+    if (vector1.y > 0 && vector2.x < 0) return 'bottom-left'
+    if (vector1.x < 0 && vector2.y < 0) return 'left-top'
+    if (vector1.y < 0 && vector2.x > 0) return 'top-right'
+  } else if (crossProduct < 0) {
+    // counter-clockwise turn (left turn)
+    if (vector1.x > 0 && vector2.y < 0) return 'right-top'
+    if (vector1.y > 0 && vector2.x > 0) return 'bottom-right'
+    if (vector1.x < 0 && vector2.y > 0) return 'left-bottom'
+    if (vector1.y < 0 && vector2.x < 0) return 'top-left'
+  }
+
+  // No turn (straight movement)
+  if (vector2.x > 0) return Dir.right
+  if (vector2.x < 0) return Dir.left
+  if (vector2.y > 0) return Dir.down
+  if (vector2.y < 0) return Dir.up
+
+  throw new Error('Invalid points for determining turn direction')
 }
 
 const newHead = (head: BodyPart, dir: Dir): BodyPart => {
@@ -121,12 +164,13 @@ const growSnake = (snake: Snake): Snake => [...snake, tail(snake)]
 const makeInitialSnake = (gridSize: Point): Snake => {
   const x = Math.floor(gridSize.x / 2)
   const y = Math.floor(gridSize.y / 2)
-  const dir = Dir.right
 
   return [
-    { x, y, dir },
-    { x: x - 1, y, dir },
-    { x: x - 2, y, dir },
+    { x, y: y + 1, dir: Dir.down },
+    { x, y, dir: Dir.right },
+    { x: x - 1, y, dir: Dir.right },
+    { x: x - 2, y, dir: Dir.down },
+    { x: x - 2, y: y - 1, dir: Dir.down },
   ]
 }
 
@@ -134,11 +178,13 @@ const makeInitialContext = (): Context => {
   const gridSize = { x: 25, y: 15 }
   const snake = makeInitialSnake(gridSize)
   const apple = newApple(gridSize, snake)
+  const dir = head(snake).dir
 
+  console.log('snake init', snake, dir)
   return {
     snake,
     gridSize,
-    dir: Dir.right,
+    dir,
     apple,
     score: 0,
     highScore: 0,
@@ -198,7 +244,7 @@ export const snakeMachine = setup({
     ticks: fromCallback(({ sendBack }) => {
       const intervalId = setInterval(() => {
         sendBack({ type: 'TICK' })
-      }, 100)
+      }, 200)
       return () => clearInterval(intervalId)
     }),
   },
@@ -216,7 +262,7 @@ export const snakeMachine = setup({
       },
     },
     playing: {
-      entry: ['move snake', 'new apple'],
+      // entry: ['move snake'],
       invoke: {
         src: 'ticks',
       },
@@ -244,8 +290,7 @@ export const snakeMachine = setup({
     },
     paused: {
       on: {
-        ARROW_KEY: {
-          actions: ['set direction'],
+        PAUSE: {
           target: 'playing',
         },
       },

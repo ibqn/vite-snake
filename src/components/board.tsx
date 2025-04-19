@@ -32,13 +32,25 @@ export const Board = () => {
                 className={cn(
                   'flex size-8 items-center justify-center',
                   'even:bg-gray-200',
-                  'after:size-full after:bg-cover after:bg-no-repeat after:content-[""]',
-                  'data-[type=head]:after:bg-[url(/snake/head.png)]',
-                  'data-[type=body]:after:bg-[url(/snake/body.png)]',
-                  'data-[type=body-turn]:after:bg-[url(/snake/body-turn.png)]',
-                  'data-[type=tail]:after:bg-[url(/snake/tail.png)]',
+                  'bg-cover bg-no-repeat',
+                  'data-[type=head]:bg-[url(/snake/head.png)]',
+                  'data-[type=body]:bg-[url(/snake/body.png)]',
+                  'data-[type=body-turn]:bg-[url(/snake/body-turn.png)]',
+                  'data-[type=tail]:bg-[url(/snake/tail.png)]',
+
                   // 'data-[type=apple]:after:text-center data-[type=apple]:after:text-2xl data-[type=apple]:after:content-["🍎"]'
-                  'data-[type=apple]:after:bg-[url(/apple.png)]'
+                  'data-[type=apple]:bg-[url(/apple.png)]',
+
+                  (dir === 'bottom-right' || dir === 'left-top') &&
+                    'data-[type=body-turn]:-rotate-90',
+                  (dir === 'top-left' || dir === 'right-bottom') &&
+                    'data-[type=body-turn]:rotate-90',
+                  (dir === 'bottom-left' || dir === 'right-top') &&
+                    'data-[type=body-turn]:rotate-180',
+                  (dir === 'top-right' || dir === 'left-bottom') &&
+                    'data-[type=body-turn]:rotate-0',
+
+                  'data-[dir=down]:rotate-90 data-[dir=left]:rotate-180 data-[dir=up]:-rotate-90'
                 )}
                 data-type={type}
                 data-dir={dir}
