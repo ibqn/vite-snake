@@ -30,6 +30,18 @@ type GameObject = {
   dir?: TurnDir
 }
 
+const getTailDir = (from: Point, to: Point): Dir => {
+  const dx = to.x - from.x
+  const dy = to.y - from.y
+
+  if (dx === 0 && dy === -1) return Dir.up
+  if (dx === 0 && dy === 1) return Dir.down
+  if (dx === -1 && dy === 0) return Dir.left
+  if (dx === 1 && dy === 0) return Dir.right
+
+  throw new Error('Invalid points for determining tail direction')
+}
+
 export const getGameObjectAtPoint = (
   point: Point,
   snake: Snake,
@@ -43,12 +55,16 @@ export const getGameObjectAtPoint = (
     }
 
     if (snakeIndex === snake.length - 1) {
-      return { type: 'tail', dir: snake[snakeIndex - 1].dir }
+      let to = snake[snakeIndex - 1]
+      if (isSamePoint(body, to)) {
+        to = snake[snakeIndex - 2]
+      }
+
+      return { type: 'tail', dir: getTailDir(body, to) }
     }
 
     const from = snake[snakeIndex + 1]
     const to = snake[snakeIndex - 1]
-
     return {
       type: to.x !== from.x && to.y !== from.y ? 'body-turn' : 'body',
       dir: getTurnDir(from, body, to),
@@ -180,7 +196,6 @@ const makeInitialContext = (): Context => {
   const apple = newApple(gridSize, snake)
   const dir = head(snake).dir
 
-  console.log('snake init', snake, dir)
   return {
     snake,
     gridSize,
