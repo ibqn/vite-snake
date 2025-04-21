@@ -2,6 +2,7 @@ import { Board } from '@/components/board'
 import { useEffect } from 'react'
 import { SnakeMachineContext } from '@/components/provider'
 import type { Dir } from '@/machine'
+import { Score } from '@/components/score'
 
 export const SnakeGame = () => {
   const { send } = SnakeMachineContext.useActorRef()
@@ -23,7 +24,8 @@ export const SnakeGame = () => {
   }, [send])
 
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-gray-100">
+    <div className="flex h-screen w-screen flex-col items-center justify-center gap-2 bg-gray-100">
+      <Score />
       <Board />
     </div>
   )
