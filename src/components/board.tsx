@@ -37,8 +37,6 @@ export const Board = () => {
                   'data-[type=body]:bg-[url(/snake/body.png)]',
                   'data-[type=body-turn]:bg-[url(/snake/body-turn.png)]',
                   'data-[type=tail]:bg-[url(/snake/tail.png)]',
-
-                  // 'data-[type=apple]:after:text-center data-[type=apple]:after:text-2xl data-[type=apple]:after:content-["🍎"]'
                   'data-[type=apple]:bg-[url(/apple.png)]',
 
                   'data-[dir=bottom-right]:-rotate-90 data-[dir=left-top]:-rotate-90',
