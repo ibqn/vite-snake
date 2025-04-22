@@ -41,14 +41,10 @@ export const Board = () => {
                   // 'data-[type=apple]:after:text-center data-[type=apple]:after:text-2xl data-[type=apple]:after:content-["🍎"]'
                   'data-[type=apple]:bg-[url(/apple.png)]',
 
-                  (dir === 'bottom-right' || dir === 'left-top') &&
-                    'data-[type=body-turn]:-rotate-90',
-                  (dir === 'top-left' || dir === 'right-bottom') &&
-                    'data-[type=body-turn]:rotate-90',
-                  (dir === 'bottom-left' || dir === 'right-top') &&
-                    'data-[type=body-turn]:rotate-180',
-                  (dir === 'top-right' || dir === 'left-bottom') &&
-                    'data-[type=body-turn]:rotate-0',
+                  'data-[dir=bottom-right]:-rotate-90 data-[dir=left-top]:-rotate-90',
+                  'data-[dir=right-bottom]:rotate-90 data-[dir=top-left]:rotate-90',
+                  'data-[dir=bottom-left]:rotate-180 data-[dir=right-top]:rotate-180',
+                  'data-[dir=left-bottom]:rotate-0 data-[dir=top-right]:rotate-0',
 
                   'data-[dir=down]:rotate-90 data-[dir=left]:rotate-180 data-[dir=up]:-rotate-90'
                 )}
