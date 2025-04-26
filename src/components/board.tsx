@@ -1,5 +1,5 @@
 import { SnakeMachineContext } from '@/components/provider'
-import { getGameObjectAtPoint } from '@/machine'
+import { getGameObjectAtPoint, State } from '@/machine'
 import { Cell } from '@/components/cell'
 import { TextOverlay } from '@/components/text-overlay'
 
@@ -11,8 +11,8 @@ export const Board = () => {
   const snake = SnakeMachineContext.useSelector(({ context }) => context.snake)
 
   const state = SnakeMachineContext.useSelector((state) => state)
-  const isGameOver = state.matches('game over')
-  const isPaused = state.matches('paused')
+  const isGameOver = state.matches(State.gameOver)
+  const isPaused = state.matches(State.paused)
 
   return (
     <div className="relative">
