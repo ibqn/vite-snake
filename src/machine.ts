@@ -216,6 +216,14 @@ type ArrowKeyEvent = {
 
 type Events = NewGameEvent | PauseEvent | TickEvent | ArrowKeyEvent
 
+export const State = {
+  newGame: 'new game',
+  playing: 'playing',
+  paused: 'paused',
+  gameOver: 'game over',
+} as const
+export type State = (typeof State)[keyof typeof State]
+
 export const snakeMachine = setup({
   types: {
     context: {} as Context,
@@ -268,15 +276,15 @@ export const snakeMachine = setup({
   initial: 'new game',
   context: makeInitialContext(),
   states: {
-    'new game': {
+    [State.newGame]: {
       on: {
         ARROW_KEY: {
           actions: ['set direction'],
-          target: 'playing',
+          target: State.playing,
         },
       },
     },
-    playing: {
+    [State.playing]: {
       // entry: ['move snake'],
       invoke: {
         src: 'ticks',
@@ -288,7 +296,7 @@ export const snakeMachine = setup({
         },
         {
           guard: or(['bite self', 'hit wall']),
-          target: 'game over',
+          target: State.gameOver,
         },
       ],
       on: {
@@ -299,22 +307,22 @@ export const snakeMachine = setup({
           actions: ['set direction'],
         },
         PAUSE: {
-          target: 'paused',
+          target: State.paused,
         },
       },
     },
-    paused: {
+    [State.paused]: {
       on: {
         PAUSE: {
-          target: 'playing',
+          target: State.playing,
         },
       },
     },
-    'game over': {
+    [State.gameOver]: {
       on: {
         NEW_GAME: {
           actions: ['reset'],
-          target: 'new game',
+          target: State.newGame,
         },
       },
     },

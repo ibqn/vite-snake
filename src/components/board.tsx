@@ -11,11 +11,13 @@ export const Board = () => {
   const snake = SnakeMachineContext.useSelector(({ context }) => context.snake)
 
   const state = SnakeMachineContext.useSelector((state) => state)
+  const isGameOver = state.matches('game over')
+  const isPaused = state.matches('paused')
 
   return (
     <div className="relative">
-      {state.matches('game over') && <TextOverlay text="Game over" />}
-      {state.matches('paused') && <TextOverlay text="Paused" />}
+      {isGameOver && <TextOverlay text="Game over" />}
+      {isPaused && <TextOverlay text="Paused" />}
 
       <div
         className="grid border border-gray-300"
