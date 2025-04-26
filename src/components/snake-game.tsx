@@ -24,7 +24,7 @@ export const SnakeGame = () => {
   }, [send])
 
   return (
-    <div className="flex h-screen w-screen flex-col items-center justify-center gap-2 bg-gray-100">
+    <div className="flex min-h-svh flex-col items-center justify-center gap-2 bg-gray-100">
       <Score />
       <Board />
     </div>
