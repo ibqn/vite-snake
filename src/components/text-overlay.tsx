@@ -14,7 +14,7 @@ export const TextOverlay = ({ text, className, ...props }: Props) => {
         className
       )}
     >
-      <div className="text-shadow rounded bg-gray-600/70 p-8 px-10 text-2xl font-bold text-white">
+      <div className="text-shadow rounded border border-gray-300 bg-gray-100/90 p-8 px-10 text-2xl font-bold drop-shadow">
         {text}
       </div>
     </div>
