@@ -1,6 +1,7 @@
 import { SnakeMachineContext } from '@/components/provider'
 import { getGameObjectAtPoint } from '@/machine'
 import { Cell } from '@/components/cell'
+import { TextOverlay } from '@/components/text-overlay'
 
 export const Board = () => {
   const gridSize = SnakeMachineContext.useSelector(
@@ -9,8 +10,13 @@ export const Board = () => {
   const apple = SnakeMachineContext.useSelector(({ context }) => context.apple)
   const snake = SnakeMachineContext.useSelector(({ context }) => context.snake)
 
+  const state = SnakeMachineContext.useSelector((state) => state)
+
   return (
-    <div>
+    <div className="relative">
+      {state.matches('game over') && <TextOverlay text="Game over" />}
+      {state.matches('paused') && <TextOverlay text="Paused" />}
+
       <div
         className="grid border border-gray-300"
         style={{
