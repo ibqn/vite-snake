@@ -20,6 +20,7 @@ export type Context = {
   snake: Snake
   gridSize: Point
   dir: Dir
+  prevDir: Dir | null
   apple: Point
   score: number
   highScore: number
@@ -200,6 +201,7 @@ const makeInitialContext = (): Context => {
     snake,
     gridSize,
     dir,
+    prevDir: null,
     apple,
     score: 0,
     highScore: 0,
@@ -240,11 +242,17 @@ export const snakeMachine = setup({
   actions: {
     'move snake': assign({
       snake: ({ context }) => moveSnake(context.snake, context.dir),
+      prevDir: null,
     }),
     'set direction': assign({
       dir: ({ context, event }) => {
         assertEvent(event, 'ARROW_KEY')
-        return context.dir !== oppositeDir(event.dir) ? event.dir : context.dir
+        if (!context.prevDir) {
+          context.prevDir = context.dir
+        }
+        return context.prevDir !== oppositeDir(event.dir)
+          ? event.dir
+          : context.dir
       },
     }),
     'grow snake': assign({
