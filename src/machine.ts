@@ -245,14 +245,12 @@ export const snakeMachine = setup({
       prevDir: null,
     }),
     'set direction': assign({
+      prevDir: ({ context }) => context.prevDir ?? context.dir,
       dir: ({ context, event }) => {
         assertEvent(event, 'ARROW_KEY')
-        if (context.prevDir === null) {
-          context.prevDir = context.dir
-        }
-        return context.prevDir !== oppositeDir(event.dir)
-          ? event.dir
-          : context.dir
+        const prevDir = context.prevDir ?? context.dir
+
+        return prevDir !== oppositeDir(event.dir) ? event.dir : context.dir
       },
     }),
     'grow snake': assign({
