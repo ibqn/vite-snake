@@ -247,7 +247,7 @@ export const snakeMachine = setup({
     'set direction': assign({
       dir: ({ context, event }) => {
         assertEvent(event, 'ARROW_KEY')
-        if (!context.prevDir) {
+        if (context.prevDir === null) {
           context.prevDir = context.dir
         }
         return context.prevDir !== oppositeDir(event.dir)
